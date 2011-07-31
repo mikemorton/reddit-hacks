@@ -20,7 +20,10 @@ import cookielib
 from cStringIO import StringIO
 import csv
 import getpass
-import json
+try:
+    import json
+except ImportError:
+    import simplejson as json 
 import logging
 import urllib
 import urllib2
