@@ -116,7 +116,7 @@ class RedditClient:
 
         # parse and return the response
         logging.info('content type: %s', resp.info()['Content-Type'])
-        if resp.info()['Content-Type'] == 'text/plain':
+        if resp.info()['Content-Type'] == 'text/plain' or resp.info()['Content-Type'].startswith('text/html'):
             logging.info('returning plaintext')
             return resp.read()
         return json.load(resp)
@@ -220,3 +220,15 @@ class RedditClient:
             csv_f.writerow(row)
         return self._post(self._url('/api/flaircsv', sr=subreddit),
                           flair_csv=f.getvalue())
+
+    def get_messages(self):
+        data = self._get(self._url('/message/unread'))
+        #print json.dumps(data, sort_keys=True, indent=1)
+
+        for message in data['data']['children']:
+            if message['kind'] == 't4' and message['data']['subject'] == 'logo':
+                yield message['data']['author'], message['data']['body']
+          
+
+        # touch this url to mark the previous messages as read
+        data = self._get(self.host + '/message/inbox/')
