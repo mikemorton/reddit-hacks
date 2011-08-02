@@ -222,13 +222,33 @@ class RedditClient:
                           flair_csv=f.getvalue())
 
     def get_messages(self):
-        data = self._get(self._url('/message/unread'))
-        #print json.dumps(data, sort_keys=True, indent=1)
+        
+        after = None
+        while True:
+            kw = dict()
+            if after:
+                kw['after'] = after
+            
+            data = self._get(self._url('/message/inbox'), **kw)
+            print json.dumps(data, sort_keys=True, indent=1)
 
-        for message in data['data']['children']:
-            if message['kind'] == 't4' and message['data']['subject'] == 'logo':
-                yield message['data']['author'], message['data']['body']
-          
+            lastunread = False
+            for message in data['data']['children']:
+                if message['kind'] == 't4':
+                    if message['data']['subject'] == 'logo':
+                        yield message['data']['author'], message['data']['body']
+                    lastunread = message['data']['new']
+
+            after = data['data']['after']
+            
+            print after, lastunread
+
+            if not lastunread:
+                break
+            if not after:
+                break
 
         # touch this url to mark the previous messages as read
         data = self._get(self.host + '/message/inbox/')
+
+

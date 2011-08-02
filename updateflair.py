@@ -18,17 +18,15 @@ client = redditclient.RedditClient()
 client.log_in()
 
 csvdata = list()
-while True:
-    messages = client.get_messages()
 
-    empty = True
-    for (user,cssclass) in client.get_messages():
-        csvdata.append((user, '', cssclass))
-        empty = False
+messages = client.get_messages()
 
-    if empty:
-        break
+for (user,cssclass) in client.get_messages():
+    csvdata.append((user, '', cssclass))
+    
+csvdata.reverse()
 
 print csvdata
-if len(csvdata) > 0:
-    client.flaircsv('sports', csvdata)
+for i in xrange(0, len(csvdata), 100):
+    client.flaircsv('sports', csvdata[i:i+100])
+
