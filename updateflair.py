@@ -22,6 +22,8 @@ csvdata = list()
 messages = client.get_messages()
 
 for (user,cssclass) in client.get_messages():
+    if cssclass == 'clear':
+        cssclass = ''
     csvdata.append((user, '', cssclass))
     
 csvdata.reverse()
