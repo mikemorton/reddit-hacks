@@ -105,6 +105,7 @@ class RedditClient:
         req = urllib2.Request(url, data)
         self.cookies.add_cookie_header(req)
         opener = urllib2.build_opener(self.auth_handler)
+        req.add_header('User-Agent', 'sportslogobot')
         resp = opener.open(req)
 
         # save any cookies to the cookie jar
