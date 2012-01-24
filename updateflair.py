@@ -12,7 +12,7 @@ def configure_logging():
 
     logger.addHandler(ch)
 
-configure_logging()
+#configure_logging()
 
 client = redditclient.RedditClient()
 client.log_in()
@@ -25,10 +25,11 @@ for (user,cssclass) in client.get_messages():
     if cssclass == 'clear':
         cssclass = ''
     csvdata.append((user, '', cssclass))
+    print "%s %s" % (user, cssclass)
     
 csvdata.reverse()
 
-print csvdata
 for i in xrange(0, len(csvdata), 100):
     client.flaircsv('sports', csvdata[i:i+100])
 
+print "\nUpdated %d users" % (len(csvdata))

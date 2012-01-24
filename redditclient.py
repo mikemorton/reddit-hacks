@@ -231,7 +231,7 @@ class RedditClient:
                 kw['after'] = after
             
             data = self._get(self._url('/message/inbox'), **kw)
-            print json.dumps(data, sort_keys=True, indent=1)
+            logging.info(json.dumps(data, sort_keys=True, indent=1))
 
             lastunread = False
             for message in data['data']['children']:
@@ -242,7 +242,8 @@ class RedditClient:
 
             after = data['data']['after']
             
-            print after, lastunread
+            logging.info(after)
+            logging.info(lastunread)
 
             if not lastunread:
                 break
