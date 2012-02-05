@@ -129,16 +129,19 @@ class RedditClient:
                 return True
         return False
 
-    def log_in(self):
+    def log_in(self, user, password):
         """Sign into the site and get a reddit_session cookie.
 
         NOTE: this interacts with the terminal to get credentials
         """
-        while not self.logged_in:
-            user = raw_input('reddit username: ')
-            password = getpass.getpass('reddit password: ')
+        while True:
             response = self._post(self._url('/api/login'),
                                   user=user, passwd=password)
+            if not self.logged_in:
+                user = raw_input('reddit username: ')
+                password = getpass.getpass('reddit password: ')
+            else:
+                break
 
         # fetch modhash
         response = self._get(self._url('/api/me'))

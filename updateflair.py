@@ -1,5 +1,6 @@
 import redditclient
 import logging
+import sys
 
 
 def configure_logging():
@@ -14,18 +15,25 @@ def configure_logging():
 
 #configure_logging()
 
+username = sys.argv[1]
+password = sys.argv[2]
+
+
 client = redditclient.RedditClient()
-client.log_in()
+if not client.log_in(username, password):
+    print "Failed to log in"
+    exit()
 
 csvdata = list()
 
 messages = client.get_messages()
 
-for (user,cssclass) in client.get_messages():
-    if cssclass == 'clear':
-        cssclass = ''
-    csvdata.append((user, '', cssclass))
-    print "%s %s" % (user, cssclass)
+for (user,messagebody) in client.get_messages():
+    flair = messagebody.split()[0]
+    if flair == 'clear':
+        flair = ''
+    csvdata.append((user, '', flair))
+    print "%s %s" % (user, flair)
     
 csvdata.reverse()
 
